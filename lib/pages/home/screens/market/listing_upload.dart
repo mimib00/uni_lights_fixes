@@ -348,6 +348,7 @@ class _ListingUploadState extends State<ListingUpload> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: SizedBox(
+                          width: 100,
                           child: TextFormField(
                             controller: price,
                             cursorColor: kRedColor,
@@ -460,8 +461,6 @@ class _ListingUploadState extends State<ListingUpload> {
                               },
                             );
                           }
-
-                          //
                         },
                       ),
                     ),

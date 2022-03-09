@@ -81,8 +81,11 @@ class _MyAppState extends State<MyApp> {
     context.read<Authentication>().hasPermission();
 
     FirebaseAuth.instance.authStateChanges().listen(
-      (User? user) {
+      (User? value) {
+        var user = context.read<Authentication>().user;
+
         if (user != null) {
+          print(user.name);
           context.read<Authentication>().getUserData().then((value) => _navigatorKey.currentState!.pushNamedAndRemoveUntil('/root', (route) => false));
         } else {
           _navigatorKey.currentState!.pushNamedAndRemoveUntil('/', (route) => false);
@@ -151,7 +154,7 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: kPrimaryColor,
         fontFamily: 'Poppins',
       ),
-      initialRoute: FirebaseAuth.instance.currentUser == null ? '/' : '/root',
+      initialRoute: '/',
       routes: routes,
     );
   }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:provider/provider.dart';
@@ -214,8 +215,23 @@ class _KnowEachOtherState extends State<KnowEachOther> {
                         Navigator.pushNamed(context, '/root');
                       }
                       var isRegistered = await context.read<Authentication>().signUp();
-                      if (!isRegistered) return;
-                      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                      if (isRegistered) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: const Text("Your sign up is complete, now sign in"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    await FirebaseAuth.instance.signOut();
+                                    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                                  },
+                                  child: const Text('OK'))
+                            ],
+                          ),
+                          barrierDismissible: false,
+                        );
+                      }
                     }
                   },
                 ),
