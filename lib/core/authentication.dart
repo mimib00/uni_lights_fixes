@@ -200,66 +200,29 @@ class Authentication extends ChangeNotifier {
   }
 
   Future<bool> signUp() async {
-    try {
-      print(userData);
-
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(email: userData["email"], password: userData["password"]);
-      if (credential.user == null) {
-        throw "Couldn't Register user ";
-      }
-
-      var path = "images/${credential.user!.uid}/profile";
-      TaskSnapshot snapshot = await _storage.child(path).putFile(userData["photo"]);
-
-      if (snapshot.state == TaskState.success) {
-        var imageUrl = await snapshot.ref.getDownloadURL();
-        var date = userData["birth_day"];
-        Timestamp myTimeStamp = Timestamp.fromDate(date);
-
-        userData.removeWhere((key, value) => key == "birth_day");
-        userData.removeWhere((key, value) => key == "password");
-        userData.removeWhere((key, value) => key == "photo");
-
-        var token = await _firebaseMessaging.getToken();
-        setData({
-          "token": token
-        });
-
-        setData({
-          "photo_url": imageUrl,
-          "birth_day": myTimeStamp,
-        });
-        _user = Users.fromMap(userData);
-        _userRef.doc(credential.user!.uid).set(_user!.toMap());
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-
     // try {
-    //   UserCredential credential = await _auth.createUserWithEmailAndPassword(email: userData["email"], password: userData["password"]);
+    //   print(userData);
 
+    //   UserCredential credential = await _auth.createUserWithEmailAndPassword(email: userData["email"], password: userData["password"]);
     //   if (credential.user == null) {
     //     throw "Couldn't Register user ";
     //   }
-    // var path = "images/${credential.user!.uid}/profile";
-    // TaskSnapshot snapshot = await _storage.child(path).putFile(userData["photo"]);
-    //   if (snapshot.state == TaskState.success) {
-    // var imageUrl = await snapshot.ref.getDownloadURL();
-    // var date = userData["birth_day"];
-    // Timestamp myTimeStamp = Timestamp.fromDate(date);
 
-    // userData.removeWhere((key, value) => key == "birth_day");
-    // userData.removeWhere((key, value) => key == "password");
-    // userData.removeWhere((key, value) => key == "photo");
-    //     _firebaseMessaging.getToken().then((token) {
-    //       if (token != null) {
-    //         setData({
-    //           "token": token
-    //         });
-    //       }
-    //       // notifyListeners();
+    //   var path = "images/${credential.user!.uid}/profile";
+    //   TaskSnapshot snapshot = await _storage.child(path).putFile(userData["photo"]);
+
+    //   if (snapshot.state == TaskState.success) {
+    //     var imageUrl = await snapshot.ref.getDownloadURL();
+    //     var date = userData["birth_day"];
+    //     Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+    //     userData.removeWhere((key, value) => key == "birth_day");
+    //     userData.removeWhere((key, value) => key == "password");
+    //     userData.removeWhere((key, value) => key == "photo");
+
+    //     var token = await _firebaseMessaging.getToken();
+    //     setData({
+    //       "token": token
     //     });
 
     //     setData({
@@ -273,6 +236,44 @@ class Authentication extends ChangeNotifier {
     // } catch (e) {
     //   return false;
     // }
+
+    try {
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(email: userData["email"], password: userData["password"]);
+
+      if (credential.user == null) {
+        throw "Couldn't Register user ";
+      }
+      var path = "images/${credential.user!.uid}/profile";
+      TaskSnapshot snapshot = await _storage.child(path).putFile(userData["photo"]);
+      if (snapshot.state == TaskState.success) {
+        var imageUrl = await snapshot.ref.getDownloadURL();
+        var date = userData["birth_day"];
+        Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+        userData.removeWhere((key, value) => key == "birth_day");
+        userData.removeWhere((key, value) => key == "password");
+        userData.removeWhere((key, value) => key == "photo");
+        _firebaseMessaging.getToken().then((token) {
+          if (token != null) {
+            setData({
+              "token": token
+            });
+          }
+          // notifyListeners();
+        });
+
+        setData({
+          "photo_url": imageUrl,
+          "birth_day": myTimeStamp,
+        });
+        _user = Users.fromMap(userData);
+        _userRef.doc(credential.user!.uid).set(_user!.toMap());
+        await _auth.signOut();
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   void hasPermission() async {
