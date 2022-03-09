@@ -267,7 +267,7 @@ class Authentication extends ChangeNotifier {
           "birth_day": myTimeStamp,
         });
         _user = Users.fromMap(userData);
-        _userRef.doc(credential.user!.uid).set(_user!.toMap());
+        await _userRef.doc(credential.user!.uid).set(_user!.toMap());
         await _auth.signOut();
       }
       return true;
