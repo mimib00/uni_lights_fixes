@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1088258375648",
+    "firebase_url": "https://uni-lights-c94ca-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "uni-lights-c94ca",
+    "storage_bucket": "uni-lights-c94ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088258375648:android:8640acc37bf501b3e97585",
+        "android_client_info": {
+          "package_name": "uni.lights"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088258375648-rj0fvslr57tngkf5shlbduft37mm7569.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ2U4mePmavdAE4ZI7uXzz_AClf6ZNN80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088258375648-rj0fvslr57tngkf5shlbduft37mm7569.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
