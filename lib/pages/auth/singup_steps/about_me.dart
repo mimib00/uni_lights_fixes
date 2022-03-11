@@ -59,6 +59,13 @@ class _AboutMeState extends State<AboutMe> {
   }
 
   @override
+  void dispose() {
+    _date.dispose();
+    _course.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(

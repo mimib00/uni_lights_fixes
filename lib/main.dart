@@ -33,7 +33,9 @@ void main() async {
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signOut();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgoundHandler);
-  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(androidNotificationChannel);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(androidNotificationChannel);
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
 
@@ -43,10 +45,7 @@ void main() async {
     await Purchases.setup("goog_auKOGwwRIdbYuUdLHNBCiMnMbjh");
   }
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MultiProvider(
       providers: [
@@ -79,19 +78,19 @@ class _MyAppState extends State<MyApp> {
     Geofire.initialize("dates");
     context.read<Authentication>().hasService();
     context.read<Authentication>().hasPermission();
+    // context.read<Authentication>().checkSub();
 
     FirebaseAuth.instance.authStateChanges().listen(
-      (User? value) {
-        var user = context.read<Authentication>().user;
-
+      (User? user) {
         if (user != null) {
-          print(user.name);
+
           context.read<Authentication>().getUserData().then((value) => _navigatorKey.currentState!.pushNamedAndRemoveUntil('/root', (route) => false));
         } else {
           _navigatorKey.currentState!.pushNamedAndRemoveUntil('/', (route) => false);
         }
       },
     );
+    super.initState();
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
@@ -128,16 +127,13 @@ class _MyAppState extends State<MyApp> {
             content: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(notification.body!)
-                ],
+                children: [Text(notification.body!)],
               ),
             ),
           ),
         );
       }
     });
-    super.initState();
   }
 
   @override
@@ -154,7 +150,7 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: kPrimaryColor,
         fontFamily: 'Poppins',
       ),
-      initialRoute: '/',
+      initialRoute: FirebaseAuth.instance.currentUser == null ? '/' : '/root',
       routes: routes,
     );
   }

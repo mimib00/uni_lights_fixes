@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:provider/provider.dart';
@@ -195,43 +194,22 @@ class _KnowEachOtherState extends State<KnowEachOther> {
                         ),
                       );
                       var data = {
-                        "tags": [
-                          item1,
-                          item2,
-                          item3,
-                          item4,
-                          item5
-                        ],
+                        "tags": [item1, item2, item3, item4, item5],
                       };
                       context.read<Authentication>().setData(data);
                       if (widget.isApple) {
-                        var isRegistered = await context.read<Authentication>().appleSignUp(widget.uid);
-                        if (!isRegistered) {
+                        var isRegistered = await context.read<Authentication>().appleSignUp( widget.uid);
+                        if(!isRegistered) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Error in apple login"), backgroundColor: kRedColor),
+                            SnackBar(content: Text("Error in apple login"), backgroundColor: kRedColor),
                           );
                           return;
                         }
                         Navigator.pushNamed(context, '/root');
                       }
                       var isRegistered = await context.read<Authentication>().signUp();
-                      if (isRegistered) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            content: const Text("Your sign up is complete, now sign in"),
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    await FirebaseAuth.instance.signOut();
-                                    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-                                  },
-                                  child: const Text('OK'))
-                            ],
-                          ),
-                          barrierDismissible: false,
-                        );
-                      }
+                      if (!isRegistered) return;
+                      Navigator.pushNamed(context, '/root');
                     }
                   },
                 ),

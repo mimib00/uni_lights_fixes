@@ -62,7 +62,7 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
 
-    context.read<Authentication>().getUserData();
+    var user = context.read<Authentication>().getUserData();
 
     context.read<DataManager>().checkLimits(context);
     // Future.delayed(const Duration(seconds: 2), () {
@@ -308,7 +308,7 @@ class AddPhotos extends StatefulWidget {
 
 class _AddPhotosState extends State<AddPhotos> {
   List<File> photos = [];
-  bool showError = false;
+  bool showError = false, uploadLoading = false;
 
   void _getImages() async {
     final ImagePicker _picker = ImagePicker();
@@ -353,36 +353,38 @@ class _AddPhotosState extends State<AddPhotos> {
         width: kWidth(context),
         child: photos.isEmpty
             ? OutlinedButton(
-                onPressed: () => _getImages(),
-                child: const Icon(
-                  Icons.add_a_photo,
-                  color: Colors.black,
-                  size: 50,
-                ),
-              )
+          onPressed: () => _getImages(),
+          child: const Icon(
+            Icons.add_a_photo,
+            color: Colors.black,
+            size: 50,
+          ),
+        )
             : ListView.builder(
-                shrinkWrap: true,
-                itemCount: photos.length,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) => photos
-                    .map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Image.file(
-                          e,
-                          width: 100,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                    .toList()[index],
+          shrinkWrap: true,
+          itemCount: photos.length,
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          itemBuilder: (context, index) => photos
+              .map(
+                (e) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Image.file(
+                e,
+                width: 100,
+                height: 50,
+                fit: BoxFit.cover,
               ),
+            ),
+          )
+              .toList()[index],
+        ),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        OutlinedButton(
+        uploadLoading
+            ? const CircularProgressIndicator.adaptive()
+            : OutlinedButton(
           onPressed: () async {
             if (photos.isEmpty || photos.length != 3) {
               setState(() {
@@ -391,9 +393,13 @@ class _AddPhotosState extends State<AddPhotos> {
               Future.delayed(const Duration(seconds: 3), () {
                 setState(() {
                   showError = false;
+                  uploadLoading = false;
                 });
               });
             } else {
+              setState(() {
+                uploadLoading = true;
+              });
               final Reference _storage = FirebaseStorage.instance.ref();
 
               List<String> list = [];
@@ -409,11 +415,12 @@ class _AddPhotosState extends State<AddPhotos> {
                 }
               }
               var ref = FirebaseFirestore.instance.collection("users").doc(widget.user?.uid!);
-              Map<String, dynamic> data = {
-                "photos": list
-              };
+              Map<String, dynamic> data = {"photos": list};
               ref.update(data);
               context.read<Authentication>().getUserData().then((value) => Navigator.of(context).pop());
+              setState(() {
+                uploadLoading = false;
+              });
             }
           },
           child: const Text(

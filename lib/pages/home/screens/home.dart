@@ -96,10 +96,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   child: StreamBuilder<dynamic>(
                     stream: stream,
                     builder: (_, snapshot) {
-                      if (!snapshot.hasData) return Container();
-
+                      if (!snapshot.hasData) return Text('Error: ${snapshot.error}');
                       var data = snapshot.data;
-                      print(data["callBack"] == Geofire.onGeoQueryReady);
+
                       if (data["callBack"] == Geofire.onGeoQueryReady) {
                         List list = List.from(data["result"]);
                         list.removeWhere((element) => element == user!.uid);
@@ -192,23 +191,7 @@ class _UniDatesState extends State<UniDates> {
     if (dates.length > index) currentDate = dates[index];
 
     return dates.isEmpty
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.asset(
-                'assets/images/clarity_sad-face-line.png',
-                height: 35,
-              ),
-              Center(
-                child: MyText(
-                  paddingTop: 15.0,
-                  text: 'There are no dates near you',
-                  size: 12,
-                  color: kGreyColor3,
-                ),
-              ),
-            ],
-          )
+        ? const Center(child: CircularProgressIndicator())
         : Visibility(
             visible: currentDate != null,
             child: ListView(
@@ -231,7 +214,13 @@ class _UniDatesState extends State<UniDates> {
                   children: [
                     // Left
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.read<DataManager>().swipe().then((value) {
+                          if (value != "limit") {
+                            dates.removeWhere((element) => element.uid == currentDate!.uid);
+                          }
+                        });
+                      },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 40),
                         width: 50,

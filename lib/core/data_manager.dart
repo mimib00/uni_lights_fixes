@@ -145,7 +145,7 @@ class DataManager extends ChangeNotifier {
         _restLimits(prefs);
       }
 
-      _swipes = prefs.getInt("swipes") ?? 10;
+      _swipes = prefs.getInt("swipes") ?? 0;
     });
   }
 }

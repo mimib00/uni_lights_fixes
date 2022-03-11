@@ -8,6 +8,7 @@ import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -16,6 +17,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uni_lights/models/user.dart';
 import 'package:uni_lights/pages/auth/signup.dart';
+import 'package:uni_lights/utils/constants.dart';
 
 class Authentication extends ChangeNotifier {
   /// Location data.
@@ -57,22 +59,20 @@ class Authentication extends ChangeNotifier {
 
   Future<void> getUserData() async {
     var user = FirebaseAuth.instance.currentUser!;
-    var value = await _userRef.doc(user.uid).get();
+     await _userRef.doc(user.uid).get().then((value) {
+       print(value.data());
+       _user = Users.fromMap(value.data()!, id: value.id);
+       _firebaseMessaging.getToken().then((token) {
+         if (_user?.token != null || _user?.token != token) {
+           _userRef.doc(_user?.uid).set({"token": token}, SetOptions(merge: true));
+         }
+       });
 
-    if (value.data() == null) return;
-    _user = Users.fromMap(value.data()!, id: value.id);
-    print(_user!.name);
-    _firebaseMessaging.getToken().then((token) {
-      if (_user?.token != null || _user?.token != token) {
-        _userRef.doc(_user?.uid).set({
-          "token": token
-        }, SetOptions(merge: true));
-      }
+       setLocation();
+       checkSub();
+       notifyListeners();
     });
 
-    setLocation();
-    checkSub();
-    notifyListeners();
   }
 
   /// Sets the user's status.
@@ -129,6 +129,8 @@ class Authentication extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+
+
   }
 
   Future<bool> appleSignUp(String uid) async {
@@ -145,9 +147,7 @@ class Authentication extends ChangeNotifier {
         userData.removeWhere((key, value) => key == "photo");
         _firebaseMessaging.getToken().then((token) {
           if (token != null) {
-            setData({
-              "token": token
-            });
+            setData({"token": token});
           }
           // notifyListeners();
         });
@@ -218,9 +218,7 @@ class Authentication extends ChangeNotifier {
         userData.removeWhere((key, value) => key == "photo");
         _firebaseMessaging.getToken().then((token) {
           if (token != null) {
-            setData({
-              "token": token
-            });
+            setData({"token": token});
           }
           // notifyListeners();
         });
@@ -229,9 +227,9 @@ class Authentication extends ChangeNotifier {
           "photo_url": imageUrl,
           "birth_day": myTimeStamp,
         });
-        // _user = Users.fromMap(userData);
-        await _userRef.doc(credential.user!.uid).set(userData);
-        disposed();
+        _user = Users.fromMap(userData);
+        _userRef.doc(credential.user!.uid).set(_user!.toMap());
+
       }
       return true;
     } catch (e) {

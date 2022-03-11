@@ -9,17 +9,26 @@ import 'package:uni_lights/widgets/my_button.dart';
 import 'package:uni_lights/widgets/my_text.dart';
 import 'package:uni_lights/widgets/my_text_field.dart';
 
-class AccountInfo extends StatelessWidget {
+class AccountInfo extends StatefulWidget {
   AccountInfo({Key? key, this.isApple = false, this.email = ""}) : super(key: key);
   final bool isApple;
   final String email;
+
+  @override
+  State<AccountInfo> createState() => _AccountInfoState();
+}
+
+class _AccountInfoState extends State<AccountInfo> {
   TextEditingController _name = TextEditingController();
+
   TextEditingController _email = TextEditingController();
+
   TextEditingController _password = TextEditingController();
+
   TextEditingController _confirmPassword = TextEditingController();
 
   Future<bool> _validateInput(BuildContext context) async {
-    if (!isApple) {
+    if (!widget.isApple) {
       if (_password.text.trim().length < 6) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -62,24 +71,31 @@ class AccountInfo extends StatelessWidget {
         ),
       );
       return false;
-    }
-    {
-      // } else if (await context.read<Authentication>().userExist(_email.text.trim())) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(
-      //       content: Text('There is already an account with this email.'),
-      //       backgroundColor: kRedColor,
-      //     ),
-      //   );
-      //   return false;
-      // } else {
+    } else if (await context.read<Authentication>().userExist(_email.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('There is already an account with this email.'),
+          backgroundColor: kRedColor,
+        ),
+      );
+      return false;
+    } else {
       return true;
     }
   }
 
   @override
+  void dispose() {
+   _name.dispose();
+   _email.dispose();
+   _password.dispose();
+   _confirmPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _email.text = email;
+    _email.text = widget.email;
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -122,10 +138,10 @@ class AccountInfo extends StatelessWidget {
                 ),
                 MyTextField(
                   hintText: 'Email (University email preferred)',
-                  readOnly: isApple ? true : false,
+                  readOnly: widget.isApple ? true : false,
                   controller: _email,
                 ),
-                isApple
+                widget.isApple
                     ? Container()
                     : MyTextField(
                         hintText: 'Password',
@@ -133,7 +149,7 @@ class AccountInfo extends StatelessWidget {
                         haveSuffixIcon: true,
                         controller: _password,
                       ),
-                isApple
+                widget.isApple
                     ? Container()
                     : MyTextField(
                         hintText: 'Re-type password',
@@ -154,7 +170,7 @@ class AccountInfo extends StatelessWidget {
                           var data = {
                             "name": _name.text.trim(),
                             "email": _email.text.trim(),
-                            "password": isApple ? null : _password.text.trim(),
+                            "password": widget.isApple ? null : _password.text.trim(),
                           };
                           context.read<Authentication>().setData(data);
                           context.read<Authentication>().next();
