@@ -24,8 +24,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  var currentIndex = 0;
-  TabController? _controller;
   double radius = 10;
 
   late Stream stream;
@@ -37,30 +35,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     setState(() {
       stream = context.read<MatchMaker>().fetchNearByUsers(locationData, radius)!;
     });
-    _controller = TabController(length: 2, vsync: this);
-    _controller!.addListener(() {
-      setState(() {
-        currentIndex = _controller!.index;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     var user = context.watch<Authentication>().user;
     int swipes = context.watch<DataManager>().swipes;
+
     return swipes <= 0
         ? const SwipeLimit()
         : Padding(
             padding: const EdgeInsets.only(top: 110),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
+                  color: kGreenColor,
                   margin: const EdgeInsets.symmetric(
                     horizontal: 15,
                     vertical: 15,
@@ -72,22 +65,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                       ),
-                      child: TabBar(
-                        controller: _controller,
-                        labelColor: kPrimaryColor,
-                        unselectedLabelColor: kBlackColor,
-                        labelStyle: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: const Center(
+                          child: Text(
+                            'Dates & Mates',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: currentIndex == 0 ? kRedColor : kGreenColor,
-                        ),
-                        tabs: const [
-                          Text('Uni Mates'),
-                          Text('Uni Dates'),
-                        ],
                       ),
                     ),
                   ),
@@ -107,23 +97,86 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         }
                       }
 
-                      return UniDates(
-                        isDate: currentIndex == 1,
-                      );
+                      return const UniDates();
                     },
                   ),
                 ),
               ],
             ),
           );
+    // return swipes <= 0
+    //     ? const SwipeLimit()
+    //     : Padding(
+    //         padding: const EdgeInsets.only(top: 110),
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.stretch,
+    //           children: [
+    // Card(
+    //   elevation: 5,
+    //   shape: RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.circular(50),
+    //   ),
+    //   margin: const EdgeInsets.symmetric(
+    //     horizontal: 15,
+    //     vertical: 15,
+    //   ),
+    // child: SizedBox(
+    //   height: 40,
+    //   child: Theme(
+    //     data: Theme.of(context).copyWith(
+    //       highlightColor: Colors.transparent,
+    //       splashColor: Colors.transparent,
+    //     ),
+    //     child: TabBar(
+    //       controller: _controller,
+    //       labelColor: kPrimaryColor,
+    //       unselectedLabelColor: kBlackColor,
+    //       labelStyle: const TextStyle(
+    //         fontFamily: 'Poppins',
+    //         fontSize: 14,
+    //       ),
+    //       indicator: BoxDecoration(
+    //         borderRadius: BorderRadius.circular(50),
+    //         color: currentIndex == 0 ? kRedColor : kGreenColor,
+    //       ),
+    //       tabs: const [
+    //         Text('Uni Mates'),
+    //         Text('Uni Dates'),
+    //       ],
+    //     ),
+    //   ),
+    //               ),
+    //             ),
+    // Expanded(
+    //   child: StreamBuilder<dynamic>(
+    //     stream: stream,
+    //     builder: (_, snapshot) {
+    //       if (!snapshot.hasData) return Text('Error: ${snapshot.error}');
+    //       var data = snapshot.data;
+
+    //       if (data["callBack"] == Geofire.onGeoQueryReady) {
+    //         List list = List.from(data["result"]);
+    //         list.removeWhere((element) => element == user!.uid);
+    //         for (var key in list) {
+    //           context.read<MatchMaker>().queryUsers(key, user!);
+    //         }
+    //       }
+
+    //       return UniDates(
+    //         isDate: currentIndex == 1,
+    //       );
+    //     },
+    //   ),
+    // ),
+    //           ],
+    //         ),
+    //       );
   }
 }
 
 class UniDates extends StatefulWidget {
-  final bool isDate;
   const UniDates({
     Key? key,
-    required this.isDate,
   }) : super(key: key);
 
   @override
@@ -191,7 +244,23 @@ class _UniDatesState extends State<UniDates> {
     if (dates.length > index) currentDate = dates[index];
 
     return dates.isEmpty
-        ? const Center(child: CircularProgressIndicator())
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.asset(
+                'assets/images/clarity_sad-face-line.png',
+                height: 35,
+              ),
+              Center(
+                child: MyText(
+                  paddingTop: 15.0,
+                  text: 'There are no matches',
+                  size: 12,
+                  color: kGreyColor3,
+                ),
+              ),
+            ],
+          )
         : Visibility(
             visible: currentDate != null,
             child: ListView(
@@ -254,7 +323,13 @@ class _UniDatesState extends State<UniDates> {
                         var user = context.read<Authentication>().user!;
                         if (user.isPremium) {
                           createChatRoom(user, currentDate!);
-                        } else {}
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("sending messages without a match is only for premim users"),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 20),
@@ -289,7 +364,7 @@ class _UniDatesState extends State<UniDates> {
                         var user = context.read<Authentication>().user!;
                         context.read<DataManager>().swipe().then((temp) {
                           if (temp != "limit") {
-                            context.read<MatchMaker>().match(user.uid!, currentDate!.uid!, widget.isDate);
+                            context.read<MatchMaker>().match(user.uid!, currentDate!.uid!);
                             setState(() {
                               dates.removeAt(index);
                             });

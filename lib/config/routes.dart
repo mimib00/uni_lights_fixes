@@ -11,7 +11,7 @@ import 'package:uni_lights/pages/welcome.dart';
 Map<String, Widget Function(BuildContext)> routes = {
   "/": (context) => const Welcome(),
   "/login": (context) => const SignIn(),
-  "/signup": (context) => SignUp(),
+  "/signup": (context) => const SignUp(),
   "/root": (context) => const RootScreen(),
   "/view": (context) => const ViewProfile(),
   "/listing": (context) => const ListingUpload(),

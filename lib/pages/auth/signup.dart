@@ -14,7 +14,7 @@ import 'singup_steps/light_pick.dart';
 class SignUp extends StatefulWidget {
   final String uid, email;
   final bool isApple;
-  SignUp({Key? key, this.uid = "", this.email = "", this.isApple = false}) : super(key: key);
+  const SignUp({Key? key, this.uid = "", this.email = "", this.isApple = false}) : super(key: key);
 
   @override
   State<SignUp> createState() => _SignUpState();

@@ -62,7 +62,7 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
 
-    var user = context.read<Authentication>().getUserData();
+    context.read<Authentication>().getUserData();
 
     context.read<DataManager>().checkLimits(context);
     // Future.delayed(const Duration(seconds: 2), () {
@@ -74,140 +74,281 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
+      endDrawer: const MyDrawer(),
       appBar: MyAppBar(
         haveMenuButton: true,
         globalKey: _key,
       ),
-      endDrawer: const MyDrawer(),
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
-      // extendBody: true,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: screens[selectedScreen],
-      floatingActionButton: Visibility(
-        visible: MediaQuery.of(context).viewInsets.bottom == 0,
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedScreen = 3;
-            });
-          },
-          child: Container(
-            margin: const EdgeInsets.only(top: 100, right: 2),
-            height: 70,
-            width: 70,
-            padding: const EdgeInsets.only(bottom: 4),
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              image: const DecorationImage(
-                image: AssetImage('assets/images/ellipse_141.png'),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/images/heart_white.png',
-                height: 25,
-              ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Colors.transparent,
-        ),
-        child: BottomAppBar(
-          color: Colors.transparent,
-          elevation: 0,
-          shape: const CircularNotchedRectangle(),
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bottom_bar.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            height: 100,
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 3),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    BottomNavBarItem(
-                      icon: 'assets/images/ic_sharp-account-circle.png',
-                      iconSize: 27,
-                      isSelected: selectedScreen == 0,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 0;
-                        });
-                      },
+      body: Builder(
+        builder: (context) {
+          return Scaffold(
+            body: screens[selectedScreen],
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedScreen = 3;
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(top: 100, right: 2),
+                  height: 70,
+                  width: 70,
+                  padding: const EdgeInsets.only(bottom: 4),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/ellipse_141.png'),
+                      fit: BoxFit.cover,
                     ),
-                    BottomNavBarItem(
-                      icon: 'assets/images/group.png',
-                      iconSize: 22.0,
-                      isSelected: selectedScreen == 1,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 1;
-                        });
-                      },
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/heart_white.png',
+                      height: 25,
                     ),
-                    BottomNavBarItem(
-                      icon: 'assets/images/ic_baseline-sell.png',
-                      isSelected: selectedScreen == 2,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 2;
-                        });
-                      },
-                    ),
-                    //do not remove these empty containers
-                    Container(),
-                    Container(),
-                    //do not remove these empty containers
-                    BottomNavBarItem(
-                      icon: 'assets/images/fluent_document-one-page-24-filled.png',
-                      isSelected: selectedScreen == 4,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 4;
-                        });
-                      },
-                    ),
-                    BottomNavBarItem(
-                      icon: 'assets/images/bi_chat-dots-fill.png',
-                      isSelected: selectedScreen == 5,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 5;
-                        });
-                      },
-                    ),
-
-                    BottomNavBarItem(
-                      icon: 'assets/images/group_44.png',
-                      iconSize: 28.0,
-                      isSelected: selectedScreen == 6,
-                      onTap: () {
-                        setState(() {
-                          selectedScreen = 6;
-                        });
-                      },
-                    ),
-                  ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+            bottomNavigationBar: Theme(
+              data: Theme.of(context).copyWith(
+                canvasColor: Colors.transparent,
+              ),
+              child: BottomAppBar(
+                color: Colors.transparent,
+                elevation: 0,
+                shape: const CircularNotchedRectangle(),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/bottom_bar.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  height: 100,
+                  padding: const EdgeInsets.only(left: 15, right: 15, bottom: 3),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          BottomNavBarItem(
+                            icon: 'assets/images/ic_sharp-account-circle.png',
+                            iconSize: 27,
+                            isSelected: selectedScreen == 0,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 0;
+                              });
+                            },
+                          ),
+                          BottomNavBarItem(
+                            icon: 'assets/images/group.png',
+                            iconSize: 22.0,
+                            isSelected: selectedScreen == 1,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 1;
+                              });
+                            },
+                          ),
+                          BottomNavBarItem(
+                            icon: 'assets/images/ic_baseline-sell.png',
+                            isSelected: selectedScreen == 2,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 2;
+                              });
+                            },
+                          ),
+                          //do not remove these empty containers
+                          Container(),
+                          Container(),
+                          //do not remove these empty containers
+                          BottomNavBarItem(
+                            icon: 'assets/images/fluent_document-one-page-24-filled.png',
+                            isSelected: selectedScreen == 4,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 4;
+                              });
+                            },
+                          ),
+                          BottomNavBarItem(
+                            icon: 'assets/images/bi_chat-dots-fill.png',
+                            isSelected: selectedScreen == 5,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 5;
+                              });
+                            },
+                          ),
+
+                          BottomNavBarItem(
+                            icon: 'assets/images/group_44.png',
+                            iconSize: 28.0,
+                            isSelected: selectedScreen == 6,
+                            onTap: () {
+                              setState(() {
+                                selectedScreen = 6;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
+    // return Scaffold(
+    //   key: _key,
+    // appBar: MyAppBar(
+    //   haveMenuButton: true,
+    //   globalKey: _key,
+    // ),
+    //   endDrawer: const MyDrawer(),
+    // resizeToAvoidBottomInset: true,
+    // extendBodyBehindAppBar: true,
+    //   // extendBody: true,
+    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    //   body: screens[selectedScreen],
+    // floatingActionButton: Visibility(
+    //   visible: MediaQuery.of(context).viewInsets.bottom == 0,
+    //   child: GestureDetector(
+    //     onTap: () {
+    //       setState(() {
+    //         selectedScreen = 3;
+    //       });
+    //     },
+    //     child: Container(
+    //       margin: const EdgeInsets.only(top: 100, right: 2),
+    //       height: 70,
+    //       width: 70,
+    //       padding: const EdgeInsets.only(bottom: 4),
+    //       decoration: BoxDecoration(
+    //         color: kPrimaryColor,
+    //         image: const DecorationImage(
+    //           image: AssetImage('assets/images/ellipse_141.png'),
+    //           fit: BoxFit.cover,
+    //         ),
+    //         borderRadius: BorderRadius.circular(100),
+    //       ),
+    //       child: Center(
+    //         child: Image.asset(
+    //           'assets/images/heart_white.png',
+    //           height: 25,
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // ),
+    // bottomNavigationBar: Theme(
+    //   data: Theme.of(context).copyWith(
+    //     canvasColor: Colors.transparent,
+    //   ),
+    //   child: BottomAppBar(
+    //     color: Colors.transparent,
+    //     elevation: 0,
+    //     shape: const CircularNotchedRectangle(),
+    //     child: Container(
+    //       decoration: const BoxDecoration(
+    //         image: DecorationImage(
+    //           image: AssetImage('assets/images/bottom_bar.png'),
+    //           fit: BoxFit.cover,
+    //         ),
+    //       ),
+    //       height: 100,
+    //       padding: const EdgeInsets.only(left: 15, right: 15, bottom: 3),
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.end,
+    //         children: [
+    //           Row(
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             crossAxisAlignment: CrossAxisAlignment.center,
+    //             children: [
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/ic_sharp-account-circle.png',
+    //                 iconSize: 27,
+    //                 isSelected: selectedScreen == 0,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 0;
+    //                   });
+    //                 },
+    //               ),
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/group.png',
+    //                 iconSize: 22.0,
+    //                 isSelected: selectedScreen == 1,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 1;
+    //                   });
+    //                 },
+    //               ),
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/ic_baseline-sell.png',
+    //                 isSelected: selectedScreen == 2,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 2;
+    //                   });
+    //                 },
+    //               ),
+    //               //do not remove these empty containers
+    //               Container(),
+    //               Container(),
+    //               //do not remove these empty containers
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/fluent_document-one-page-24-filled.png',
+    //                 isSelected: selectedScreen == 4,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 4;
+    //                   });
+    //                 },
+    //               ),
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/bi_chat-dots-fill.png',
+    //                 isSelected: selectedScreen == 5,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 5;
+    //                   });
+    //                 },
+    //               ),
+
+    //               BottomNavBarItem(
+    //                 icon: 'assets/images/group_44.png',
+    //                 iconSize: 28.0,
+    //                 isSelected: selectedScreen == 6,
+    //                 onTap: () {
+    //                   setState(() {
+    //                     selectedScreen = 6;
+    //                   });
+    //                 },
+    //               ),
+    //             ],
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // ),
+    // );
   }
 }
 
@@ -353,81 +494,83 @@ class _AddPhotosState extends State<AddPhotos> {
         width: kWidth(context),
         child: photos.isEmpty
             ? OutlinedButton(
-          onPressed: () => _getImages(),
-          child: const Icon(
-            Icons.add_a_photo,
-            color: Colors.black,
-            size: 50,
-          ),
-        )
+                onPressed: () => _getImages(),
+                child: const Icon(
+                  Icons.add_a_photo,
+                  color: Colors.black,
+                  size: 50,
+                ),
+              )
             : ListView.builder(
-          shrinkWrap: true,
-          itemCount: photos.length,
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context, index) => photos
-              .map(
-                (e) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: Image.file(
-                e,
-                width: 100,
-                height: 50,
-                fit: BoxFit.cover,
+                shrinkWrap: true,
+                itemCount: photos.length,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) => photos
+                    .map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Image.file(
+                          e,
+                          width: 100,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                    .toList()[index],
               ),
-            ),
-          )
-              .toList()[index],
-        ),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
         uploadLoading
             ? const CircularProgressIndicator.adaptive()
             : OutlinedButton(
-          onPressed: () async {
-            if (photos.isEmpty || photos.length != 3) {
-              setState(() {
-                showError = true;
-              });
-              Future.delayed(const Duration(seconds: 3), () {
-                setState(() {
-                  showError = false;
-                  uploadLoading = false;
-                });
-              });
-            } else {
-              setState(() {
-                uploadLoading = true;
-              });
-              final Reference _storage = FirebaseStorage.instance.ref();
+                onPressed: () async {
+                  if (photos.isEmpty || photos.length != 3) {
+                    setState(() {
+                      showError = true;
+                    });
+                    Future.delayed(const Duration(seconds: 3), () {
+                      setState(() {
+                        showError = false;
+                        uploadLoading = false;
+                      });
+                    });
+                  } else {
+                    setState(() {
+                      uploadLoading = true;
+                    });
+                    final Reference _storage = FirebaseStorage.instance.ref();
 
-              List<String> list = [];
-              for (var image in photos) {
-                var path = "/images/${widget.user?.uid}/${DateTime.now().microsecondsSinceEpoch}";
-                TaskSnapshot snapshot = await _storage.child(path).putFile(image);
-                if (snapshot.state == TaskState.success) {
-                  var imageUrl = await snapshot.ref.getDownloadURL();
+                    List<String> list = [];
+                    for (var image in photos) {
+                      var path = "/images/${widget.user?.uid}/${DateTime.now().microsecondsSinceEpoch}";
+                      TaskSnapshot snapshot = await _storage.child(path).putFile(image);
+                      if (snapshot.state == TaskState.success) {
+                        var imageUrl = await snapshot.ref.getDownloadURL();
 
-                  list.add(
-                    imageUrl,
-                  );
-                }
-              }
-              var ref = FirebaseFirestore.instance.collection("users").doc(widget.user?.uid!);
-              Map<String, dynamic> data = {"photos": list};
-              ref.update(data);
-              context.read<Authentication>().getUserData().then((value) => Navigator.of(context).pop());
-              setState(() {
-                uploadLoading = false;
-              });
-            }
-          },
-          child: const Text(
-            "ADD",
-            style: TextStyle(fontSize: 20),
-          ),
-        ),
+                        list.add(
+                          imageUrl,
+                        );
+                      }
+                    }
+                    var ref = FirebaseFirestore.instance.collection("users").doc(widget.user?.uid!);
+                    Map<String, dynamic> data = {
+                      "photos": list
+                    };
+                    ref.update(data);
+                    context.read<Authentication>().getUserData().then((value) => Navigator.of(context).pop());
+                    setState(() {
+                      uploadLoading = false;
+                    });
+                  }
+                },
+                child: const Text(
+                  "ADD",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
         Visibility(
           visible: photos.isNotEmpty,
           child: IconButton(

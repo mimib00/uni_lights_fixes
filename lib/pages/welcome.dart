@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:uni_lights/core/authentication.dart';
 import 'package:uni_lights/utils/constants.dart';
 import 'package:uni_lights/widgets/my_button.dart';

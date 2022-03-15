@@ -35,9 +35,7 @@ class ProfileImage extends StatelessWidget {
       default:
     }
     return GestureDetector(
-      onTap: () {
-        onTap!();
-      },
+      onTap: onTap == null ? () {} : onTap!(),
       child: Container(
         width: width,
         height: height,

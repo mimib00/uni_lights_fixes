@@ -10,7 +10,7 @@ import 'package:uni_lights/widgets/my_text.dart';
 import 'package:uni_lights/widgets/my_text_field.dart';
 
 class AccountInfo extends StatefulWidget {
-  AccountInfo({Key? key, this.isApple = false, this.email = ""}) : super(key: key);
+  const AccountInfo({Key? key, this.isApple = false, this.email = ""}) : super(key: key);
   final bool isApple;
   final String email;
 
@@ -86,10 +86,10 @@ class _AccountInfoState extends State<AccountInfo> {
 
   @override
   void dispose() {
-   _name.dispose();
-   _email.dispose();
-   _password.dispose();
-   _confirmPassword.dispose();
+    _name.dispose();
+    _email.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
     super.dispose();
   }
 

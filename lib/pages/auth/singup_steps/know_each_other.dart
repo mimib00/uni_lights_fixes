@@ -194,14 +194,20 @@ class _KnowEachOtherState extends State<KnowEachOther> {
                         ),
                       );
                       var data = {
-                        "tags": [item1, item2, item3, item4, item5],
+                        "tags": [
+                          item1,
+                          item2,
+                          item3,
+                          item4,
+                          item5
+                        ],
                       };
                       context.read<Authentication>().setData(data);
                       if (widget.isApple) {
-                        var isRegistered = await context.read<Authentication>().appleSignUp( widget.uid);
-                        if(!isRegistered) {
+                        var isRegistered = await context.read<Authentication>().appleSignUp(widget.uid);
+                        if (!isRegistered) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Error in apple login"), backgroundColor: kRedColor),
+                            const SnackBar(content: Text("Error in apple login"), backgroundColor: kRedColor),
                           );
                           return;
                         }

@@ -90,12 +90,15 @@ class _PostCardState extends State<PostCard> {
                     onSelected: (value) {
                       switch (value) {
                         case "report":
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Feature coming soon.'),
-                              backgroundColor: Colors.black,
-                            ),
-                          );
+                          var ref = FirebaseFirestore.instance.collection('posts').doc(widget.post.id);
+
+                          context.read<DataManager>().flagPosting(ref, user).then(
+                                (value) => ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Post has been reported"),
+                                  ),
+                                ),
+                              );
                           break;
                         case "delete":
                           showDialog(

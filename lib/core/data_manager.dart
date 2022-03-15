@@ -16,6 +16,8 @@ class DataManager extends ChangeNotifier {
 
   final CollectionReference<Map<String, dynamic>> _products = FirebaseFirestore.instance.collection('products');
 
+  final CollectionReference<Map<String, dynamic>> _reports = FirebaseFirestore.instance.collection('reports');
+
   final Reference _storage = FirebaseStorage.instance.ref();
 
   Stream<QuerySnapshot<Map<String, dynamic>>> posts(Users user) {
@@ -145,7 +147,15 @@ class DataManager extends ChangeNotifier {
         _restLimits(prefs);
       }
 
-      _swipes = prefs.getInt("swipes") ?? 0;
+      _swipes = prefs.getInt("swipes") ?? 10;
+    });
+  }
+
+  Future<void> flagPosting(DocumentReference<Map<String, dynamic>> ref, Users user) async {
+    await _reports.add({
+      "created_at": FieldValue.serverTimestamp(),
+      "owner": FirebaseFirestore.instance.collection('users').doc(user.uid),
+      "post": ref
     });
   }
 }

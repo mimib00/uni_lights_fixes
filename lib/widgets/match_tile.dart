@@ -95,7 +95,7 @@ class _MatchesTilesState extends State<MatchesTiles> {
         var user = context.read<Authentication>().user!;
         if (onLongPress) {
           // Unmatch
-          context.read<MatchMaker>().unmatch(user.uid!, widget.id, widget.isDate);
+          context.read<MatchMaker>().unmatch(user.uid!, widget.id);
         } else {
           // create new chat/ got to chat
           createChatRoom(user);

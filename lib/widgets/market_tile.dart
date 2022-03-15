@@ -274,6 +274,40 @@ class _DiscountsTilesState extends State<DiscountsTiles> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Visibility(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  PopupMenuButton<String>(
+                                    icon: const Icon(
+                                      Icons.more_horiz,
+                                      color: kGreyColor3,
+                                      size: 30,
+                                    ),
+                                    tooltip: "More",
+                                    onSelected: (value) {
+                                      var ref = FirebaseFirestore.instance.collection('products').doc(widget.uid);
+
+                                      context.read<DataManager>().flagPosting(ref, user).then(
+                                            (value) => ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text("Post has been reported"),
+                                              ),
+                                            ),
+                                          );
+                                    },
+                                    itemBuilder: (context) => [
+                                      const PopupMenuItem<String>(
+                                        child: Text(
+                                          'Report',
+                                        ),
+                                        value: "report",
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Visibility(
                               visible: owner?.id != null && user.uid == owner!.id,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
